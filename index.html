@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>員工健康檢查查詢</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
+</head>
+
+<body>
+	<div class="main mx-auto text-center mt-5 d-flex flex-column">
+		<h1 class="fw-bold">108-109年教職員工健康檢查名單系統</h1>
+		<form action="" id="form">
+			<label for="" class="fs-4  col-lg-5 col-10">
+				請輸入您的身分證後五碼
+				<input type="text" class="form-control mx-auto" id="Id" name="ID" placeholder="身分證後五碼" required />
+			</label>
+			<button type="submit" id="checkButton" class="btn btn-primary mt-3 d-block mx-auto">送出</button>
+			<div class="mt-4 d-none" id="search">
+				<div class="spinner-border text-danger d-block mx-auto" role="status">
+					<span class="visually-hidden">Loading...</span>
+				</div>
+				<p class="text-danger fs-2">查詢中...</p>
+			</div>
+		</form>
+	</div>
+	<div class="modal fade" id="checkModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+		aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">檢查查詢查詢結果</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body fs-3">
+					<h1 id="modalId" class="fw-bold text-success"></h1>
+					<p id="modalDepartment"></p>
+					<p id="modalName"></p>
+					<p id="modalStudentId"></p>
+					<p id="modalItem"></p>
+					<p id="alertContent" class="text-danger"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary mx-auto" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+	const checkButton = document.getElementById('checkButton')
+	const form = document.getElementById('form')
+	const googleUrl = 'https://script.google.com/macros/s/AKfycbzmwkqpxVepZeStYvzPTQrUMHo_cVMB2xCkzTbOFDkisTfa1WISvhbUdvxjX_hKtzX4/exec'
+	let checkModal = new bootstrap.Modal(document.getElementById('checkModal'))
+	form.addEventListener('submit', (e) => {
+		e.preventDefault()
+		let formData = new FormData(form)
+		document.getElementById('search').classList.toggle('d-none')
+		// document.getElementById('search').classList.add('d-block')
+		fetch(googleUrl, {
+			method: 'POST',
+			body: formData,
+		})
+			.then((response) => {
+				return response.json()
+			})
+			.then((data) => {
+
+				document.getElementById('modalId').textContent = '符合，請於109年5月29日前完成檢查'
+				document.getElementById('modalDepartment').textContent = '系所：' + data.department
+				document.getElementById('modalName').textContent = '姓名：' + data.name
+				document.getElementById('modalStudentId').textContent = '職稱：' + data.position
+				document.getElementById('modalItem').textContent = '健檢項目：' + data.item
+				document.getElementById('alertContent').innerHTML = ''
+				checkModal.show()
+				document.getElementById('search').classList.toggle('d-none')
+				form.reset()
+			})
+			.catch((err) => {
+				document.getElementById('modalId').textContent = ''
+				document.getElementById('modalDepartment').textContent = ''
+				document.getElementById('modalName').textContent = ''
+				document.getElementById('modalStudentId').textContent = ''
+				document.getElementById('modalItem').textContent = ''
+				document.getElementById('search').classList.toggle('d-none')
+				document.getElementById('alertContent').innerHTML = '查無此人，請再輸入一次'
+				checkModal.show()
+			})
+	})
+</script>
+
+</html>
