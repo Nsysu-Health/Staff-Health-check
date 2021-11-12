@@ -32,7 +32,7 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="staticBackdropLabel">檢查查詢查詢結果</h5>
+					<h5 class="modal-title" id="staticBackdropLabel">查詢結果</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body fs-3">
@@ -73,7 +73,7 @@
 			.then((data) => {
 
 				document.getElementById('modalId').textContent = data.time
-				document.getElementById('modalDepartment').textContent = '系所：' + data.department
+				document.getElementById('modalDepartment').textContent = '單位：' + data.department
 				document.getElementById('modalName').textContent = '姓名：' + data.name
 				document.getElementById('modalStudentId').textContent = '職稱：' + data.position
 				document.getElementById('modalItem').textContent = '健檢項目：' + data.item
